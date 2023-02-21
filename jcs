@@ -1,0 +1,52 @@
+#!/bin/bash
+set echo off
+#TODO Add the ability to create projects
+#TODO Implement compiling to other langs
+
+if [[ ${1} != "" ]] 
+then
+    
+progname=${1}
+
+
+fi
+
+echo -e "\e[1m\e[35mJCS version 1.0. Shell: $(which $SHELL)"
+
+
+echo -e "\e[1m\e[36mWhat is the name of the program\e[92m"
+
+read progname
+
+echo -e "\e[1m\e[36mSearching..."
+
+filedir=$(find ~ -name "${progname}.java")
+
+dir=$(dirname ${filedir})
+
+echo ${dir}
+
+cd ${dir}
+
+echo -e "\e[1m\e[36mCompiling...\e[1m\e[31m"
+
+compout=$(javac ${progname}.java)
+
+if [[ ${compout} != "" ]] 
+then
+    
+echo -e "\e[1m\e[31mSyntax error: ${compout} Please check the file and try again"
+
+
+else
+
+echo -e "\e[1m\e[92mDone"
+read -p "Do you want to run the program? (Y/n)" yn
+echo -e "\e[0m"
+case $yn in
+    [Yy]* ) java ${progname} exit;;
+    [Nn]* ) echo -e "\e[1m\e[36mYour program is done!" exit;;
+    * ) echo -e "\e[31Invalid option";;
+esac
+
+fi
