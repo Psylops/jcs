@@ -1,50 +1,62 @@
 #!/bin/bash
-set echo off
 #TODO Add the ability to create projects
 #TODO Implement compiling to other langs
 
-if [[ ${1} != "" ]] 
+
+arg1=$#
+
+echo "$arg1"
+echo -e "\e[1m\e[35mJCS version 1.0. Shell: $(which "$SHELL")"
+
+if [[ -z "$arg1" ]] 
 then
+echo -e "\e[1m\e[36mWhat is the name of the program\e[92m"
     
+read -r progname
+
+else
 progname=${1}
-
-
 fi
 
-echo -e "\e[1m\e[35mJCS version 1.0. Shell: $(which $SHELL)"
 
 
-echo -e "\e[1m\e[36mWhat is the name of the program\e[92m"
 
-read progname
 
 echo -e "\e[1m\e[36mSearching..."
 
+if [[ $UID == 0 ]]
+then
+
+filedir=$(find / -name "${progname}.java")
+
+else
+
 filedir=$(find ~ -name "${progname}.java")
 
-dir=$(dirname ${filedir})
+fi
 
-echo ${dir}
 
-cd ${dir}
+dir=$(dirname "${filedir}")
+
+cd "${dir}" || echo -e "\e[31mError"
 
 echo -e "\e[1m\e[36mCompiling...\e[1m\e[31m"
 
-compout=$(javac ${progname}.java)
+eval "$(javac "${progname}".java)"
 
-if [[ ${compout} != "" ]] 
+if [[ $? != 0 ]] 
 then
     
-echo -e "\e[1m\e[31mSyntax error: ${compout} Please check the file and try again"
+echo -e "\e[1m\e[31mSyntax error: Please check the file and try again"
 
 
 else
 
 echo -e "\e[1m\e[92mDone"
-read -p "Do you want to run the program? (Y/n)" yn
+read -r -p "Do you want to run the program? (Y/n)" yn
 echo -e "\e[0m"
 case $yn in
-    [Yy]* ) java ${progname} exit;;
+    [Yy]* ) java "${progname}" exit;;
     [Nn]* ) echo -e "\e[1m\e[36mYour program is done!" exit;;
     * ) echo -e "\e[31Invalid option";;
 esac
